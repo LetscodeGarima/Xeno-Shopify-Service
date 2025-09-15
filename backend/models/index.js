@@ -38,7 +38,8 @@ Order.belongsTo(Customer, { foreignKey: "customer_id", targetKey: "customer_id" 
 
 // Sync DB
 sequelize.sync({ alter: true }).then(() => {
-  console.log("✅ Sequelize models synced with DB");
+  console.log("Sequelize models synced with DB");
 });
+
 
 export default sequelize;
