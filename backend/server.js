@@ -2,7 +2,7 @@ import express from "express";
 import mysql from "mysql2";
 import cors from "cors";
 import dotenv from "dotenv";
-import cron from "node-cron";   // ✅ import cron
+import cron from "node-cron";   //import cron
 
 import dashboardRoutes from "./routes/dashboard.js";
 import authRoutes from "./routes/authroutes.js";  
@@ -20,9 +20,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ---------------------
 // MySQL Connection
-// ---------------------
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -33,79 +31,69 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) {
-    console.error("❌ DB connection failed:", err);
+    console.error("DB connection failed:", err);
   } else {
-    console.log("✅ Connected to MySQL Database");
+    console.log("Connected to MySQL Database");
   }
 });
 
-// ---------------------
 // Register routes
-// ---------------------
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 
-// ---------------------
 // Root route
-// ---------------------
 app.get("/", (req, res) => {
-  res.send("Shopify Data Ingestion Service is running 🚀");
+  res.send("Shopify Data Ingestion Service is running");
 });
 
-// ---------------------
 // Shopify ingestion routes (manual trigger)
-// ---------------------
 app.get("/ingest-products", async (req, res) => {
   try {
     await fetchAndSaveProducts();
-    res.send("Products ingestion completed ✅");
+    res.send("Products ingestion completed");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error ingesting products ❌");
+    res.status(500).send("Error ingesting products");
   }
 });
 
 app.get("/ingest-customers", async (req, res) => {
   try {
     await fetchAndSaveCustomers();
-    res.send("Customers ingestion completed ✅");
+    res.send("Customers ingestion completed");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error ingesting customers ❌");
+    res.status(500).send("Error ingesting customers");
   }
 });
 
 app.get("/ingest-orders", async (req, res) => {
   try {
     await fetchAndSaveOrders();
-    res.send("Orders ingestion completed ✅");
+    res.send("Orders ingestion completed");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error ingesting orders ❌");
+    res.status(500).send("Error ingesting orders");
   }
 });
 
-// ---------------------
 // Scheduler (Auto Sync)
-// ---------------------
 // This will run every hour (change cron expression as needed)
 cron.schedule("0 * * * *", async () => {
-  console.log("⏳ Running scheduled Shopify data sync...");
+  console.log("Running scheduled Shopify data sync...");
 
   try {
     await fetchAndSaveProducts();
     await fetchAndSaveCustomers();
     await fetchAndSaveOrders();
-    console.log("✅ Shopify data sync completed!");
+    console.log("Shopify data sync completed!");
   } catch (err) {
-    console.error("❌ Error in scheduled sync:", err);
+    console.error("Error in scheduled sync:", err);
   }
 });
 
-// ---------------------
 // Start server
-// ---------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
